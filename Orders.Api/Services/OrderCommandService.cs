@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Orders.Api.Contracts;
 using Orders.Domain.Entities;
 using Orders.Domain.Events;
@@ -23,7 +24,23 @@ public sealed class OrderCommandService
         var items = request.Items.Select(x => new OrderItem(x.Sku, x.Quantity, x.UnitPrice));
         var order = Order.Create(request.CustomerId, items);
 
-        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+        // InMemory provider (tests) has no relational transactions; SQLite/SQL do.
+        if (_dbContext.Database.IsRelational())
+        {
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+            await PersistOrderWithOutboxAsync(order, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        }
+        else
+        {
+            await PersistOrderWithOutboxAsync(order, cancellationToken);
+        }
+
+        return order;
+    }
+
+    private async Task PersistOrderWithOutboxAsync(Order order, CancellationToken cancellationToken)
+    {
         await _orderRepository.AddAsync(order, cancellationToken);
 
         var domainEvent = new OrderCreatedEvent(order.Id, order.CustomerId, order.CreatedAtUtc);
@@ -35,7 +52,5 @@ public sealed class OrderCommandService
         }, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-        await transaction.CommitAsync(cancellationToken);
-        return order;
     }
 }
