@@ -1,0 +1,29 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+## Rider
+.idea/
+
+## Test artifacts
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+## NuGet
+packages/
+*.nupkg
+
+## Logs
+*.log
+
+## OS files
+Thumbs.db
+.DS_Store
