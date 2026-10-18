@@ -8,7 +8,6 @@ using Orders.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<OrdersDbContext>("orders-db");
 
@@ -56,11 +55,6 @@ app.MapGet("/orders", async (string? status, int? take, IOrderRepository reposit
     var orders = await repository.ListAsync(parsedStatus, Math.Clamp(take ?? 50, 1, 200), ct);
     return Results.Ok(orders.Select(OrderResponse.FromDomain));
 });
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
 
 app.Run();
 
