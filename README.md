@@ -1,6 +1,5 @@
 # Azure Orders Microservice (Portfolio / Lab)
 
-Portfolio project for **Deloitte Senior Cloud Software Engineer (Job 48802)**.  
 This is an interview-defensible lab implementation of an Orders microservice with clean boundaries, outbox reliability pattern, async processing, and CI.
 
 ## Problem Statement
@@ -108,14 +107,6 @@ GitHub Actions pipeline (`.github/workflows/ci.yml`) runs:
 - restore
 - build
 - test
-
-## JD 48802 Mapping
-
-- Cloud-native microservice design on Azure-aligned services
-- Reliability pattern: transactional outbox + async processing
-- Clean layering and dependency inversion for cloud/local execution
-- CI automation with GitHub Actions
-- Test coverage across domain behavior and API integration path
 
 ## Honest Limits (Portfolio Scope)
 
